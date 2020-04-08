@@ -1,0 +1,44 @@
+<html>
+    <div>
+        <h1 id="headerText"></h1>
+        <video id="video" autoplay></video>
+        <button onclick="start()">Start</button>
+        <button onclick="stop()">Stop</button>
+    </div>
+    <script>
+        var recorder;
+        var localStream;
+        var temp = window.parent.textObjects;
+        document.getElementById("headerText").innerHTML = temp[window.parent.counter].header;
+        var video = document.getElementById("video");
+        navigator.getUserMedia({video: true}, function(stream){
+            localStream = stream;
+            video.srcObject = stream;
+        }, ()=>{
+            console.log("error")
+        })
+        var blobs = [];
+        var url;
+        var base64Video;
+        function start(){
+            recorder = new MediaRecorder(localStream);
+            recorder.onstop=(e)=>{
+                var blob = new Blob(blobs, {type: 'video/webm'});
+                url = window.URL.createObjectURL(blob);
+
+                var reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = function(){
+                    window.parent.data = reader.result;
+                }
+            }
+            recorder.start();
+            recorder.ondataavailable = e =>{
+                blobs.push(e.data);
+            }
+        }
+        function stop(){
+            recorder.stop();
+        }
+    </script>
+</html>
