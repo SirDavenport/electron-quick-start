@@ -1,0 +1,15 @@
+<html>
+  <body>
+    <form id="content"></form>
+    <script>
+      loadContent();
+      function loadContent() {
+        var content = document.getElementById('content');
+        content.action = 'temp.html';
+        content.method = 'GET';
+        content.submit();
+      }
+      window.temp = 'TEMP PARENT';
+    </script>
+  </body>
+</html>
